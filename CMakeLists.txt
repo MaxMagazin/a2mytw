@@ -23,9 +23,9 @@ catkin_package()
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 ## Declare a C++ executable
-add_executable(ariac_my_team_winner_node src/ariac_my_team_winner_node.cpp)
-add_dependencies(ariac_my_team_winner_node ${catkin_EXPORTED_TARGETS})
-target_link_libraries(ariac_my_team_winner_node ${catkin_LIBRARIES})
+#add_executable(ariac_my_team_winner_node src/ariac_my_team_winner_node.cpp)
+#add_dependencies(ariac_my_team_winner_node ${catkin_EXPORTED_TARGETS})
+#target_link_libraries(ariac_my_team_winner_node ${catkin_LIBRARIES})
 
 #############
 ## Install ##
@@ -42,11 +42,11 @@ install(PROGRAMS
 )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS ariac_my_team_winner_node
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+#install(TARGETS ariac_my_team_winner_node
+#  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+#)
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/
@@ -60,6 +60,10 @@ install(FILES
  config/sample_gear_conf.yaml
  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config
 )
+
+# Install all the launch files
+install(DIRECTORY launch/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch)
 
 #############
 ## Testing ##

@@ -34,6 +34,8 @@
 // %Tag(START_COMP)%
 /// Start the competition by waiting for and then calling the start ROS Service.
 void start_competition(ros::NodeHandle & node) {
+  ROS_INFO("start_competition method");
+
   // Create a Service client for the correct service, i.e. '/ariac/start_competition'.
   ros::ServiceClient start_client =
     node.serviceClient<std_srvs::Trigger>("/ariac/start_competition");
@@ -198,7 +200,8 @@ void laser_profiler_callback(const sensor_msgs::LaserScan::ConstPtr & msg) {
 // %Tag(MAIN)%
 int main(int argc, char ** argv) {
   // Last argument is the default name of the node.
-  ros::init(argc, argv, "ariac_example_node");
+  ROS_INFO("Initing ariac_my_team_winner_node.cpp node");
+  ros::init(argc, argv, "ariac_my_team_winner_node");
 
   ros::NodeHandle node;
 

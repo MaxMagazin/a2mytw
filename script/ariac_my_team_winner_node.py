@@ -15,24 +15,33 @@
 
 from ariac_my_team_winner import ariac_my_team_winner
 import rospy
-
+import time
 
 def main():
     rospy.init_node("ariac_my_team_winner_node")
+    rospy.loginfo("Initting ariac_my_team_winner_node python")
 
     comp_class = ariac_my_team_winner.MyCompetitionClass()
     ariac_my_team_winner.connect_callbacks(comp_class)
 
-    rospy.loginfo("Setup complete.")
+    rospy.loginfo("Setup complete, start competition.")
+    time.sleep(1)
     ariac_my_team_winner.start_competition()
 
     if not comp_class.arm_1_has_been_zeroed:
-        comp_class.send_arm_to_state([0] * len(comp_class.arm_joint_names), comp_class.arm_1_joint_trajectory_publisher)
+        comp_class.send_arm_to_state([-1.57, 0, 0, 0, 0, 0], comp_class.arm_1_joint_names, comp_class.arm_1_joint_trajectory_publisher)
         comp_class.arm_1_has_been_zeroed = True
 
     if not comp_class.arm_2_has_been_zeroed:
-        comp_class.send_arm_to_state([0] * len(comp_class.arm_joint_names), comp_class.arm_2_joint_trajectory_publisher)
+        comp_class.send_arm_to_state([1.57, 0, 0, 0, 0, 0], comp_class.arm_2_joint_names, comp_class.arm_2_joint_trajectory_publisher)
         comp_class.arm_2_has_been_zeroed = True
+
+    # move gantry to zero
+    comp_class.send_arm_to_state([0, 0, 0], comp_class.gantry_joint_names, comp_class.gantry_joint_trajectory_publisher)
+
+    # reset Grippers
+    comp_class.control_gripper(False, "left")
+    comp_class.control_gripper(False, "right")
 
     rospy.spin()
 
