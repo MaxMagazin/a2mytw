@@ -13,18 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ariac_example import ariac_example
+from ariac_my_team_winner import ariac_my_team_winner
 import rospy
 
 
 def main():
-    rospy.init_node("ariac_example_node")
+    rospy.init_node("ariac_my_team_winner_node")
 
-    comp_class = ariac_example.MyCompetitionClass()
-    ariac_example.connect_callbacks(comp_class)
+    comp_class = ariac_my_team_winner.MyCompetitionClass()
+    ariac_my_team_winner.connect_callbacks(comp_class)
 
     rospy.loginfo("Setup complete.")
-    ariac_example.start_competition()
+    ariac_my_team_winner.start_competition()
 
     if not comp_class.arm_1_has_been_zeroed:
         comp_class.send_arm_to_state([0] * len(comp_class.arm_joint_names), comp_class.arm_1_joint_trajectory_publisher)

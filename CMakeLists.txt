@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(ariac_example)
+project(ariac_my_team_winner)
 
 find_package(catkin REQUIRED COMPONENTS
   nist_gear
@@ -23,9 +23,9 @@ catkin_package()
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 ## Declare a C++ executable
-add_executable(ariac_example_node src/ariac_example_node.cpp)
-add_dependencies(ariac_example_node ${catkin_EXPORTED_TARGETS})
-target_link_libraries(ariac_example_node ${catkin_LIBRARIES})
+add_executable(ariac_my_team_winner_node src/ariac_my_team_winner_node.cpp)
+add_dependencies(ariac_my_team_winner_node ${catkin_EXPORTED_TARGETS})
+target_link_libraries(ariac_my_team_winner_node ${catkin_LIBRARIES})
 
 #############
 ## Install ##
@@ -36,13 +36,13 @@ target_link_libraries(ariac_example_node ${catkin_LIBRARIES})
 
 ## Mark executable scripts (Python etc.) for installation
 install(PROGRAMS
-  script/ariac_example_node.py
+  script/ariac_my_team_winner_node.py
   script/tf2_example.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS ariac_example_node
+install(TARGETS ariac_my_team_winner_node
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -66,7 +66,7 @@ install(FILES
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_ariac_example.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_ariac_my_team_winner.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
