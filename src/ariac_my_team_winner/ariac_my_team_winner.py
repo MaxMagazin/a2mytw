@@ -18,6 +18,7 @@ from __future__ import print_function
 import time
 
 import rospy
+import tf2_ros
 
 from nist_gear.msg import Order
 from nist_gear.msg import VacuumGripperState
@@ -32,11 +33,18 @@ from std_srvs.srv import Trigger
 from trajectory_msgs.msg import JointTrajectory
 from trajectory_msgs.msg import JointTrajectoryPoint
 
+from nist_gear.msg import Order, Model, LogicalCameraImage, VacuumGripperState
+from geometry_msgs.msg import TransformStamped
+from std_srvs.srv import Trigger
+from nist_gear.srv import AGVControl, GetMaterialLocations, VacuumGripperControl
+
 from math import pi, sqrt
 import moveit_commander as mc
 
 import sys
-
+import copy
+import yaml
+import re
 
 #TODO: submit agvs to deliver orders/kits
 #TODO: listen and react to Faulty Products on agvs
@@ -92,66 +100,66 @@ def end_competition():
 
 
 def run_competition():
-    group_names = ['Full_Robot', 'Left_Arm', 'Right_Arm', 'Gantry']
-
-    # fake run competition body start
     rate = rospy.Rate(1000) # big amount on purpose
 
-    start = time.time()
+    # # fake run competition body start
+    # start = time.time()
+    #
+    # while not rospy.is_shutdown():
+    #     rate.sleep()
+    #
+    #     time_elapsed = time.time() - start
+    #
+    #     if time_elapsed > 10:
+    #         break;
+    # # fake run competition body end
 
-    while not rospy.is_shutdown():
-        rate.sleep()
+    group_names = ['Full_Robot', 'Left_Arm', 'Right_Arm', 'Gantry']
+    moveit_runner = MoveitRunner(group_names, ns='/ariac/gantry')
 
-        time_elapsed = time.time() - start
+    order = get_order()
+    agv_states = {'agv1': [], 'agv2': []}
 
-        if time_elapsed > 10:
-            break;
-    # fake run competition body end
+    all_known_parts = get_parts_from_cameras()
 
-    # moveit_runner = MoveitRunner(group_names, ns='/ariac/gantry')
-    #
-    # order = get_order()
-    # agv_states = {'agv1': [], 'agv2': []}
-    #
-    # all_known_parts = get_parts_from_cameras()
+    for shipment in order.shipments:
+        active_agv = 'agv1' if shipment.agv_id == 'agv1' else 'agv2'
+        agv_state = agv_states[active_agv]
 
-    # for shipment in order.shipments:
-    #     active_agv = 'agv1' if shipment.agv_id == 'agv1' else 'agv2'
-    #     agv_state = agv_states[active_agv]
-    #
-    #     while True:
-    #
-    #         valid_products = []
-    #         for product in shipment.products:
-    #             if product not in agv_state:
-    #                 valid_products.append(product)
-    #
-    #         candidate_moves = []
-    #         for part in all_known_parts:
-    #             for product in valid_products:
-    #                 if part.type == product.type:
-    #                     candidate_moves.append((part, product))
-    #
-    #         if candidate_moves:
-    #             part, target = candidate_moves[0]
-    #
-    #             world_target = get_target_world_pose(target, active_agv)
-    #             part_location = get_part_type_location(part)
-    #
-    #             move_successful = moveit_runner.move_part(
-    #                 part,
-    #                 world_target,
-    #                 part_location,
-    #                 active_agv
-    #             )
-    #             if move_successful:
-    #                 all_known_parts.remove(part)
-    #                 agv_state.append(target)
-    #         else:
-    #             break
-    #
-    #     submit_shipment(active_agv, shipment.shipment_type)
-    #     agv_states[active_agv] = []
+        while True:
+            rate.sleep()
+
+            valid_products = []
+            for product in shipment.products:
+                if product not in agv_state:
+                    valid_products.append(product)
+
+            candidate_moves = []
+            for part in all_known_parts:
+                for product in valid_products:
+                    if part.type == product.type:
+                        candidate_moves.append((part, product))
+
+            if candidate_moves:
+                part, target = candidate_moves[0]
+
+                world_target = get_target_world_pose(target, active_agv)
+                part_location = get_part_type_location(part)
+
+                move_successful = moveit_runner.move_part(
+                    part,
+                    world_target,
+                    part_location,
+                    active_agv
+                )
+                if move_successful:
+                    all_known_parts.remove(part)
+                    agv_state.append(target)
+            else:
+                break
+
+        submit_shipment(active_agv, shipment.shipment_type)
+        agv_states[active_agv] = []
 
 class MyCompetitionClass:
     def __init__(self):
@@ -449,14 +457,6 @@ def get_order():
 
 
 def get_part_type_location(part):
-    # rospy.wait_for_service('/ariac/material_locations')
-    # response = rospy.ServiceProxy('/ariac/material_locations',
-    #                               GetMaterialLocations)(part.type)
-    # reachable_location = None
-    # for loc in response.storage_units:
-    #     if 'shelf' in loc.unit_id or 'bin' in loc.unit_id:
-    #         reachable_location = loc.unit_id
-    #         break
     if part.type == 'piston_rod_part_blue':
         reachable_location = 'bin4'
     elif part.type == 'gear_part_green':
