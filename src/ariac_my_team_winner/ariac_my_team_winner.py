@@ -35,6 +35,8 @@ from trajectory_msgs.msg import JointTrajectoryPoint
 from math import pi, sqrt
 import moveit_commander as mc
 
+import sys
+
 
 #TODO: submit agvs to deliver orders/kits
 #TODO: listen and react to Faulty Products on agvs
@@ -90,14 +92,29 @@ def end_competition():
 
 
 def run_competition():
-    # group_names = ['Full_Robot', 'Left_Arm', 'Right_Arm', 'Gantry']
+    group_names = ['Full_Robot', 'Left_Arm', 'Right_Arm', 'Gantry']
+
+    rate = rospy.Rate(1000) # big amount on purpose
+
+    start = time.time()
+
+    while not rospy.is_shutdown():
+        rate.sleep()
+
+        time_elapsed = time.time() - start
+
+        if time_elapsed < 12:
+            rospy.loginfo(str(time_elapsed))
+        else:
+            break;
+
     # moveit_runner = MoveitRunner(group_names, ns='/ariac/gantry')
     #
     # order = get_order()
     # agv_states = {'agv1': [], 'agv2': []}
     #
     # all_known_parts = get_parts_from_cameras()
-    #
+
     # for shipment in order.shipments:
     #     active_agv = 'agv1' if shipment.agv_id == 'agv1' else 'agv2'
     #     agv_state = agv_states[active_agv]
@@ -265,11 +282,10 @@ class MyCompetitionClass:
 
 
 class MoveitRunner():
-    def __init__(self, group_names, node_name='ariac_moveit_example',
-                 ns='', robot_description='robot_description'):
+    def __init__(self, group_names, node_name='ariac_moveit_example', ns='', robot_description='robot_description'):
 
         mc.roscpp_initialize(sys.argv)
-        rospy.init_node(node_name, anonymous=True)
+        #rospy.init_node(node_name, anonymous=True)
 
         self.robot = mc.RobotCommander(ns+'/'+robot_description, ns)
         self.scene = mc.PlanningSceneInterface(ns)
