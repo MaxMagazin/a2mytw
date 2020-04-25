@@ -33,6 +33,16 @@ from trajectory_msgs.msg import JointTrajectory
 from trajectory_msgs.msg import JointTrajectoryPoint
 
 
+#TODO: submit agvs to deliver orders/kits
+#TODO: listen and react to Faulty Products on agvs
+#TODO: parse orders
+#TODO: parse sensors data
+#TODO: locate parts, plan movements
+#TODO: number and places of sensors
+#TODO
+
+#TODO: control conveyor? (only for development)
+
 def start_competition():
     rospy.loginfo("start_competition() method.")
     rospy.loginfo("Waiting for competition to be ready...")
@@ -104,7 +114,7 @@ class MyCompetitionClass:
 
     def order_callback(self, msg):
         rospy.loginfo("order_callback")
-        #TODO: rospy.loginfo("Received order:\n" + str(msg))
+        rospy.loginfo("Received order:\n" + str(msg))
         self.received_orders.append(msg)
 
     def gantry_joint_state_callback(self, msg):
