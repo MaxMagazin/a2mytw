@@ -94,6 +94,7 @@ def end_competition():
 def run_competition():
     group_names = ['Full_Robot', 'Left_Arm', 'Right_Arm', 'Gantry']
 
+    # fake run competition body start
     rate = rospy.Rate(1000) # big amount on purpose
 
     start = time.time()
@@ -103,10 +104,9 @@ def run_competition():
 
         time_elapsed = time.time() - start
 
-        if time_elapsed < 12:
-            rospy.loginfo(str(time_elapsed))
-        else:
+        if time_elapsed > 10:
             break;
+    # fake run competition body end
 
     # moveit_runner = MoveitRunner(group_names, ns='/ariac/gantry')
     #
