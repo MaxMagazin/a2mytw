@@ -83,18 +83,6 @@ sensors:
       xyz: [-13.52, -3., 2.49]
       rpy: [0, 'pi/2', 'pi/2']
 
-  logical_camera_12:
-    type: logical_camera
-    pose:
-      xyz: [-15.35, -3., 2.49]
-      rpy: [0, 'pi/2', 'pi/2']
-
-  logical_camera_13:
-    type: logical_camera
-    pose:
-      xyz: [-13.52, -3., 2.49]
-      rpy: [0, 'pi/2', 'pi/2']
-
   logical_camera_14:
     type: logical_camera
     pose:
